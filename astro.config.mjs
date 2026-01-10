@@ -40,6 +40,11 @@ export default defineConfig({
 	],
 	vite: {
 		plugins: [tailwindcss()],
+		resolve: {
+			alias: {
+				'react-dom/server': 'react-dom/server.edge'
+			}
+		},
 		define: {
 			'process.env.KEYSTATIC_GITHUB_CLIENT_ID': JSON.stringify(process.env.KEYSTATIC_GITHUB_CLIENT_ID),
 			'process.env.KEYSTATIC_GITHUB_CLIENT_SECRET': JSON.stringify(process.env.KEYSTATIC_GITHUB_CLIENT_SECRET),
