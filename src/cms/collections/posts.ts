@@ -3,29 +3,64 @@ import { fields, collection } from '@keystatic/core';
 export const posts = collection({
   label: 'Posts',
   slugField: 'title',
-  path: 'src/content/posts/*',
+  path: 'src/content/blog/*',
   entryLayout: 'content',
   format: { contentField: 'content' },
   schema: {
     title: fields.slug({ name: { label: 'Title' } }),
-    featuredImage: fields.image({
-      label: "Featured Image",
-      directory: "src/assets/images/posts",
-      publicPath: "@assets/images/posts/",
+    description: fields.text({
+      label: 'Description',
+      multiline: true,
+      description: 'A brief description of this post',
+      validation: { isRequired: true }
     }),
-    imgAlt: fields.text({ label: 'Image Alt' }),
+    pubDate: fields.date({
+      label: 'Published Date',
+      validation: { isRequired: true }
+    }),
+    updatedDate: fields.date({
+      label: 'Updated Date',
+      description: 'Optional - only set if you want to show an update date'
+    }),
+    coverImage: fields.image({
+      label: 'Cover Image',
+      description: 'Upload a cover image for this post (recommended: 853x480px)',
+      directory: 'src/assets/blogimages',
+      publicPath: '@assets/blogimages/',
+    }),
+    coverImageCredit: fields.text({
+      label: 'Cover Image Credit',
+      description: 'Optional credit for the cover image'
+    }),
+    category: fields.select({
+      label: 'Category',
+      description: 'Select a category for this post',
+      options: [
+        { label: 'Technology', value: 'technology' },
+        { label: 'Design', value: 'design' },
+        { label: 'Development', value: 'development' },
+        { label: 'Tutorial', value: 'tutorial' },
+        { label: 'News', value: 'news' },
+        { label: 'Personal', value: 'personal' },
+      ],
+      defaultValue: 'technology',
+    }),
+    tags: fields.array(
+      fields.text({ label: 'Tag' }),
+      {
+        label: 'Tags',
+        description: 'Add tags to help organize and filter posts',
+        itemLabel: (props) => props.value || 'New Tag',
+      }
+    ),
     content: fields.markdoc({
-      label: "Content",
+      label: 'Content',
       options: {
         image: {
-          directory: "src/assets/images/posts",
-          publicPath: "@assets/images/posts/",
+          directory: 'src/assets/blogimages',
+          publicPath: '@assets/blogimages/',
         },
       },
     }),
-    excerpt: fields.text({ label: 'Excerpt', multiline: true, description: 'A brief description of this article' }),
-    publishedDate: fields.date({ label: "Published date" }),
-
-
   },
 });

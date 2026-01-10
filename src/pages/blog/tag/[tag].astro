@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import BlogCard from '../../../components/BlogCard.astro'
+import { getCollection } from 'astro:content'
+import { SITE_BASE } from '../../../consts'
+
+export async function getStaticPaths() {
+	const allPosts = await getCollection('blog')
+	const allTags = [...new Set(allPosts.flatMap((post) => post.data.tags || []))]
+
+	return allTags.map((tag) => ({
+		params: { tag },
+		props: {
+			posts: allPosts
+				.filter((post) => post.data.tags?.includes(tag))
+				.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+		},
+	}))
+}
+
+const { tag } = Astro.params
+const { posts } = Astro.props
+---
+
+<BaseLayout
+	title={`Posts tagged "${tag}"`}
+	description={`Browse all posts tagged with ${tag}`}
+>
+	<main class="app-container py-36 md:py-48 pt-44 md:pt-56">
+		<div class="mb-12">
+			<a
+				href={`${SITE_BASE}/blog`}
+				class="text-primary dark:text-primary-dark hover:underline mb-4 inline-block"
+			>
+				← Back to all posts
+			</a>
+			<h1 class="text-6xl font-bold mb-4">
+				#{tag}
+			</h1>
+			<p class="text-xl opacity-70">
+				{posts.length} {posts.length === 1 ? 'post' : 'posts'} with this tag
+			</p>
+		</div>
+
+		<div class="posts-grid-container">
+			{posts.map((post) => <BlogCard post={post} />)}
+		</div>
+	</main>
+</BaseLayout>

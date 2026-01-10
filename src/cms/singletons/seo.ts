@@ -1,41 +1,29 @@
-import { fields, singleton } from '@keystatic/core'
+import { fields, singleton } from '@keystatic/core';
 
 export const seo = singleton({
-  label: 'SEO',
-  path: 'src/settings/seo',
-  format: { data: 'json' },
+  label: 'SEO Settings',
+  path: 'src/content/settings/seo',
   schema: {
-    seo: fields.object({
-      title: fields.text({ label: 'Title' }),
-      description: fields.text({ label: 'Description', multiline: true }),
-      keywords: fields.text({ label: 'Keywords' }),
-      canonical: fields.text({ label: 'Canonical' }),
+    siteTitle: fields.text({
+      label: 'Site Title',
+      description: 'Default title for your website',
+      validation: { isRequired: true },
     }),
-    opengraph: fields.object({
-      Title: fields.text({ label: 'OG Title' }),
-      Description: fields.text({ label: 'OG Description', multiline: true }),
-      Image: fields.image({ 
-        label: 'OG Image',
-        directory: '/src/assets/images/seo/opengraph/',
-        publicPath: '/src/assets/images/seo/opengraph/',
-      }),
-    },
-    {
-      label: 'Opengraph (Facebook)',
-      description: 'Opengraph options',
+    siteDescription: fields.text({
+      label: 'Site Description',
+      description: 'Default meta description',
+      multiline: true,
+      validation: { isRequired: true },
     }),
-    twitter: fields.object({
-      Title: fields.text({ label: 'Twitter Title' }),
-      Description: fields.text({ label: 'Twitter Description', multiline: true }),
-      Image: fields.image({ 
-        label: 'Twitter Image',
-        directory: '/src/assets/images/seo/twitter/',
-        publicPath: '/src/assets/images/seo/twitter/',
-      }),
-    },
-    {
-      label: 'Twitter',
-      description: 'Twitter options'
-    }
-  )},
-})
+    ogImage: fields.image({
+      label: 'OG Image',
+      description: 'Default Open Graph image (1200x630px recommended)',
+      directory: 'public',
+      publicPath: '/',
+    }),
+    twitterHandle: fields.text({
+      label: 'Twitter Handle',
+      description: 'Your Twitter handle (without @)',
+    }),
+  },
+});

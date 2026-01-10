@@ -2,8 +2,20 @@
 import NavbarLink from './NavbarLink.astro'
 import { Icon } from 'astro-icon/components'
 import ThemeSelector from './ThemeSelector.astro'
-import { SITE_BASE, WebsiteLinks } from '../consts'
+import { SITE_BASE } from '../consts'
 import LogoSVG from '../assets/logo.svg'
+import { createReader } from '@keystatic/core/reader'
+import keystaticConfig from '../../keystatic.config'
+
+const reader = createReader(process.cwd(), keystaticConfig)
+const navigationData = await reader.singletons.navigation.read()
+
+// Fallback to defaults if not configured
+const navLinks = navigationData?.links || [
+	{ name: 'Home', url: '' },
+	{ name: 'Blog', url: 'blog' },
+	{ name: 'About', url: 'about' },
+]
 ---
 
 <header class="fixed top-0 w-full z-40 bg-background dark:bg-background-dark">
@@ -14,7 +26,7 @@ import LogoSVG from '../assets/logo.svg'
 			</a>
 			<div class="gap-8 hidden md:flex items-center">
 				{
-					WebsiteLinks.map((link) => (
+					navLinks.map((link) => (
 						<NavbarLink
 							class="text-lg"
 							href={`${SITE_BASE}/${link.url}`}
@@ -50,7 +62,7 @@ import LogoSVG from '../assets/logo.svg'
 				</button>
 				<div class="flex flex-col h-full items-start gap-8 pt-16">
 					{
-						WebsiteLinks.map((link) => (
+						navLinks.map((link) => (
 							<NavbarLink
 								class="text-4xl font-light"
 								href={`${SITE_BASE}/${link.url}`}

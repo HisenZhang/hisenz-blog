@@ -1,6 +1,6 @@
 import { config } from '@keystatic/core';
-import { home, navbar, footer, branding, seo } from 'src/cms/singletons';
-import { posts } from 'src/cms/collections';
+import { site, seo, home, social, navigation } from 'src/cms/singletons';
+import { posts, media } from 'src/cms/collections';
 
 export default config({
   storage: {
@@ -8,24 +8,25 @@ export default config({
     repo: 'HisenZhang/hisenz-blog',
   },
 
-    ui: {
-    brand: { name: 'Astrokeys' },
+  ui: {
+    brand: { name: 'Saral Blog' },
     navigation: {
-      'Content': ['home',  'posts',  ],
-      'Components': [ 'navbar', 'footer'],
-      'Site Settings': [ 'branding', 'seo' ],
+      'Content': ['home', 'posts'],
+      'Media': ['media'],
+      'Settings': ['site', 'seo', 'social', 'navigation'],
     },
   },
 
   collections: {
     posts,
+    media,
   },
 
   singletons: {
+    site,
+    seo,
     home,
-    navbar,
-    footer,
-    branding,
-    seo
+    social,
+    navigation,
   },
 });

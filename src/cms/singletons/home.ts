@@ -1,45 +1,55 @@
 import { fields, singleton } from '@keystatic/core';
-import { buttons } from '../fields';
 
 export const home = singleton({
   label: 'Home Page',
-  format: { data: 'json' },
-  path: 'src/content/pages/home',
+  path: 'src/content/settings/home',
   schema: {
-    title: fields.text({
-      label: 'Page Title',
-      description: 'The title of the page',
-      defaultValue: 'Home',
+    welcomeText: fields.text({
+      label: 'Welcome Text',
+      description: 'Small text above the main heading',
+      defaultValue: 'Welcome to',
     }),
-    // Hero section
-    hero: fields.object(
-      {
-        heroImage: fields.image({
-          label: 'Hero Image',
-          description: 'Hero image',
-          directory: '/src/assets/images/pages/home',
-          publicPath: '@assets/images/pages/home/',
-        }),
-        heroImageAlt: fields.text({ label: 'Hero Image Alt text' }),
-        heading: fields.text({ label: 'Heading' }),
-        subheading: fields.text({ label: 'Subheading' }),
-        intro: fields.text({ label: 'Intro', multiline: true }),
-        buttons,
-      },
-      {
-        label: 'Hero Section',
-        description: 'The intro section of home page',
-      },
-    ),
-    // End Hero
-    posts: fields.object(
-      {
-        heading: fields.text({ label: 'Posts Heading' }),
-        subheading: fields.text({ label: 'Subheading', multiline: true }),
-      },
-      {
-        label: 'Posts section',
-      },
-    ),
+    heading: fields.text({
+      label: 'Main Heading',
+      validation: { isRequired: true },
+      defaultValue: 'Saral Theme',
+    }),
+    subheading: fields.text({
+      label: 'Subheading',
+      multiline: true,
+      validation: { isRequired: true },
+      defaultValue: 'A simple theme for personal blog sites, created for Astro framework.',
+    }),
+    recentPostsTitle: fields.text({
+      label: 'Recent Posts Section Title',
+      defaultValue: 'Recent Posts',
+    }),
+    aboutTitle: fields.text({
+      label: 'About Section Title',
+      defaultValue: 'About Me',
+    }),
+    aboutText: fields.text({
+      label: 'About Text',
+      multiline: true,
+      defaultValue: 'A brief introduction about yourself. You can include your profession, hobbies, interests, or anything you\'d like visitors to know about you.',
+    }),
+    contactTitle: fields.text({
+      label: 'Contact Section Title',
+      defaultValue: 'Get in touch',
+    }),
+    contactText: fields.text({
+      label: 'Contact Text',
+      multiline: true,
+      defaultValue: 'Use the buttons below for my resume & email.',
+    }),
+    emailAddress: fields.text({
+      label: 'Email Address',
+      defaultValue: 'example@email.com',
+    }),
+    resumeUrl: fields.text({
+      label: 'Resume URL',
+      description: 'Link to your resume file or page',
+      defaultValue: 'https://example.com',
+    }),
   },
-})
+});

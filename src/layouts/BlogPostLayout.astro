@@ -20,6 +20,8 @@ const {
 	pubDate,
 	updatedDate,
 	coverImageCredit,
+	category,
+	tags,
 	headings,
 	slug,
 	remarkPluginFrontmatter,
@@ -28,12 +30,18 @@ const {
 import BaseLayout from './BaseLayout.astro'
 import { Image } from 'astro:assets'
 import { Icon } from 'astro-icon/components'
+import { SITE_BASE } from '../consts'
 
+// Fallback to old path structure for existing posts
 const blogImages = import.meta.glob<{ default: ImageMetadata }>(
 	'/src/assets/blogimages/**/*.{jpeg,jpg,png,gif}'
 )
-
 const coverImagePath = `/src/assets/blogimages/${slug}/cover.jpg`
+
+interface Props {
+	coverImage?: ImageMetadata
+}
+const { coverImage } = Astro.props as Props
 
 const lastModified = dayjs(remarkPluginFrontmatter.lastModified)
 	.utc()
@@ -56,6 +64,33 @@ const lastModified = dayjs(remarkPluginFrontmatter.lastModified)
 						<h1 class="text-4xl sm:text-5xl leading-snug pt-12 font-bold">
 							{title}
 						</h1>
+
+						<!-- Category and Tags -->
+						{(category || (tags && tags.length > 0)) && (
+							<div class="flex flex-wrap gap-3 items-center py-6">
+								{category && (
+									<a
+										href={`${SITE_BASE}/blog/category/${category}`}
+										class="px-3 py-1 bg-primary/10 dark:bg-primary-dark/10 text-primary dark:text-primary-dark rounded-full text-sm font-medium hover:bg-primary/20 dark:hover:bg-primary-dark/20 transition-colors"
+									>
+										{category}
+									</a>
+								)}
+								{tags && tags.length > 0 && (
+									<div class="flex flex-wrap gap-2">
+										{tags.map((tag: string) => (
+											<a
+												href={`${SITE_BASE}/blog/tag/${tag}`}
+												class="text-sm opacity-60 hover:opacity-100 hover:underline transition-opacity"
+											>
+												#{tag}
+											</a>
+										))}
+									</div>
+								)}
+							</div>
+						)}
+
 						<div class="text-lg flex items-center gap-4 flex-wrap py-8">
 							<!-- Publish date -->
 							<span>
@@ -90,10 +125,10 @@ const lastModified = dayjs(remarkPluginFrontmatter.lastModified)
 						</div>
 
 						{
-							blogImages[coverImagePath] && (
+							(coverImage || blogImages[coverImagePath]) && (
 								<>
 									<Image
-										src={blogImages[coverImagePath]()}
+										src={coverImage || blogImages[coverImagePath]()}
 										alt={title}
 										class="rounded-lg"
 									/>
