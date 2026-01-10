@@ -1,5 +1,6 @@
 name = "hisenz-blog"
 compatibility_date = "2024-01-10"
+compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "./dist"
 
 # Uncomment and add your KV namespace ID after creating it in Cloudflare dashboard

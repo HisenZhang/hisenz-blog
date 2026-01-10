@@ -19,6 +19,7 @@ const {
 	description,
 	pubDate,
 	updatedDate,
+	coverImage,
 	coverImageCredit,
 	category,
 	tags,
@@ -37,11 +38,6 @@ const blogImages = import.meta.glob<{ default: ImageMetadata }>(
 	'/src/assets/blogimages/**/*.{jpeg,jpg,png,gif}'
 )
 const coverImagePath = `/src/assets/blogimages/${slug}/cover.jpg`
-
-interface Props {
-	coverImage?: ImageMetadata
-}
-const { coverImage } = Astro.props as Props
 
 const lastModified = dayjs(remarkPluginFrontmatter.lastModified)
 	.utc()

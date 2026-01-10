@@ -21,6 +21,15 @@ export default defineConfig({
 	adapter: cloudflare({
 		platformProxy: {
 			enabled: true
+		},
+		runtime: {
+			mode: 'local',
+			type: 'pages',
+			bindings: {
+				ASSETS: {
+					type: 'kv'
+				}
+			}
 		}
 	}),
 	integrations: [

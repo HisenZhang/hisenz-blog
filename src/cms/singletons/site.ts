@@ -2,8 +2,7 @@ import { fields, singleton } from '@keystatic/core';
 
 export const site = singleton({
   label: 'Site Settings',
-  path: 'src/consts',
-  format: { data: 'typescript' },
+  path: 'src/content/settings/site',
   schema: {
     SITE_TITLE: fields.text({
       label: 'Site Title',
