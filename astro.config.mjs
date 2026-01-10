@@ -19,17 +19,9 @@ export default defineConfig({
 	base: '/',
 	output: 'server',
 	adapter: cloudflare({
+		mode: 'directory',
 		platformProxy: {
 			enabled: true
-		},
-		runtime: {
-			mode: 'local',
-			type: 'pages',
-			bindings: {
-				ASSETS: {
-					type: 'kv'
-				}
-			}
 		}
 	}),
 	integrations: [
