@@ -19,10 +19,11 @@ export default defineConfig({
 	base: '/',
 	output: 'server',
 	adapter: cloudflare({
-		mode: 'directory',
+		mode: 'advanced',
 		platformProxy: {
 			enabled: true
-		}
+		},
+		functionPerRoute: false
 	}),
 	integrations: [
 		react(),
