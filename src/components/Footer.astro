@@ -1,8 +1,23 @@
 ---
-import { SITE_BASE, SocialLinks, WebsiteLinks } from '../consts'
+import { SITE_BASE, WebsiteLinks } from '../consts'
 import LogoSVG from '../assets/logo.svg'
 import { Icon } from 'astro-icon/components'
+import { createReader } from '@keystatic/core/reader'
+import keystaticConfig from '../../keystatic.config'
 
+const reader = createReader(process.cwd(), keystaticConfig)
+const footerData = await reader.singletons.footer.read()
+const socialData = await reader.singletons.social.read()
+
+const footer = footerData || {
+	linksTitle: 'Links',
+	socialsTitle: 'Socials',
+	copyrightText: 'Source code available on',
+	githubUrl: 'https://github.com/yashjawale/saral-theme-astro',
+	githubLinkText: 'GitHub',
+}
+
+const socialLinks = socialData?.links || []
 const today = new Date()
 ---
 
@@ -16,7 +31,7 @@ const today = new Date()
 			</a>
 		</div>
 		<div>
-			<h3 class="font-semibold text-2xl">Links</h3>
+			<h3 class="font-semibold text-2xl">{footer.linksTitle}</h3>
 			<div class="flex flex-wrap gap-4 mt-4">
 				{
 					WebsiteLinks.filter((link) => link.name !== 'Home').map((link) => (
@@ -42,10 +57,10 @@ const today = new Date()
 			</div>
 		</div>
 		<div>
-			<h3 class="font-semibold text-2xl">Socials</h3>
+			<h3 class="font-semibold text-2xl">{footer.socialsTitle}</h3>
 			<div class="flex flex-wrap gap-4 mt-4">
 				{
-					SocialLinks.map((link) => (
+					socialLinks.map((link) => (
 						<a
 							class="text-lg"
 							href={link.url}
@@ -61,10 +76,10 @@ const today = new Date()
 	</div>
 	<div class="app-container flex justify-between items-center pb-6 text-center">
 		<p class="text-left md:text-center w-full">
-			&copy; {today.getFullYear()} Source code available on <a
+			&copy; {today.getFullYear()} {footer.copyrightText} <a
 				class="underline"
-				href="https://github.com/yashjawale/saral-theme-astro"
-				target="_blank">GitHub</a
+				href={footer.githubUrl}
+				target="_blank">{footer.githubLinkText}</a
 			>
 		</p>
 	</div>
