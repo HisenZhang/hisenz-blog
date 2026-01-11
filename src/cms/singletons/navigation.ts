@@ -13,7 +13,6 @@ export const navigation = singleton({
         url: fields.text({
           label: 'URL Path',
           description: 'Relative path (e.g., "blog", "about") or leave empty for home',
-          validation: { isRequired: true },
         }),
       }),
       {
