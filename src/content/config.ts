@@ -15,4 +15,19 @@ const blog = defineCollection({
 	}),
 })
 
-export const collections = { blog }
+// Keystatic-managed collections
+const media = defineCollection({
+	type: 'data',
+	schema: z.object({
+		// Media collection managed by Keystatic
+	}),
+})
+
+const settings = defineCollection({
+	type: 'data',
+	schema: z.object({
+		// Settings managed by Keystatic singletons
+	}),
+})
+
+export const collections = { blog, media, settings }

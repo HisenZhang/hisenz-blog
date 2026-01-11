@@ -1,0 +1,104 @@
+---
+title: "System Calls - What’s Underneath the Hood"
+description: "In previous memos, I briefly mentioned that read() and write() functions in libc are wrappers of system call read and write"
+pubDate: 2023-05-11T00:00:00
+category: "Lecture"
+tags: ["Tutorial", "Spark", "OPSYS"]
+visibility: "public"
+---
+
+In previous memos, I briefly mentioned that `read()` and `write()` functions in libc are wrappers of system call `read` and `write`. Note that they are very different animals not to be confused. In short, libc functions provide a higher-level interface for common programming tasks, while system calls offer direct access to kernel services and are used for privileged operations.
+
+System calls, also known as `syscalls`, enable applications to request services and resources from the operating system. By invoking specific system calls, applications can perform operations such as file I/O, process management, memory allocation, and hardware interaction. System calls facilitate privileged operations by transferring control from user mode to kernel mode, where the operating system handles the requested tasks.
+
+## Linux System Call Table
+
+[Reference](https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md#x86_64-64_bit)
+
+System calls are vital for the functioning of an operating system as they provide a standardized mechanism for applications to interact with the underlying system, offering a predefined set of functions and parameters for various operations. Below is an excerpt from the Linux system call table:
+
+| NR | syscall name | %rax | arg0 (%rdi) | arg1 (%rsi) | arg2 (%rdx) | arg3 (%r10) | arg4 (%r8) | arg5 (%r9) |
+|----|--------------|------|--------------|--------------|--------------|--------------|--------------|--------------|
+| 0  | read         | 0x00 | unsigned int fd | char *buf | size_t count | - | - | - |
+| 1  | write        | 0x01 | unsigned int fd | const char *buf | size_t count | - | - | - |
+| 2  | open         | 0x02 | const char *filename | int flags | umode_t mode | - | - | - |
+| 3  | close        | 0x03 | unsigned int fd | - | - | - | - | - |
+| 4  | stat         | 0x04 | const char *filename | struct __old_kernel_stat *statbuf | - | - | - | - |
+| 7  | poll         | 0x07 | struct pollfd *ufds | unsigned int nfds | int timeout | - | - | - |
+| 8  | lseek        | 0x08 | unsigned int fd | off_t offset | unsigned int whence | - | - | - |
+| 9  | mmap         | 0x09 | ? | ? | ? | ? | ? | ? |
+| 12 | brk          | 0x0c | unsigned long brk | - | - | - | - | - |
+| 16 | ioctl        | 0x10 | unsigned int fd | unsigned int cmd | unsigned long arg | - | - | - |
+| 21 | access       | 0x15 | const char *filename | int mode | - | - | - | - |
+| 22 | pipe         | 0x16 | int *fildes | - | - | - | - | - |
+| 23 | select       | 0x17 | int n | fd_set *inp | fd_set *outp | fd_set *exp | struct timeval *tvp | - |
+| 29 | shmget       | 0x1d | key_t key | size_t size | int flag | - | - | - |
+| 30 | shmat        | 0x1e | int shmid | char *shmaddr | int shmflg | - | - | - |
+| 31 | shmctl       | 0x1f | int shmid | int cmd | struct shmid_ds *buf | - | - | - |
+| 32 | dup          | 0x20 | unsigned int fildes | - | - | - | - | - |
+| 33 | dup2         | 0x21 | unsigned int oldfd | unsigned int newfd | - | - | - | - |
+| 39 | getpid       | 0x27 | - | - | - | - | - | - |
+| 41 | socket       | 0x29 | int | int | int | - | - | - |
+| 42 | connect      | 0x2a | int | struct sockaddr * | int | - | - | - |
+| 43 | accept       | 0x2b | int | struct sockaddr * | int * | - | - | - |
+| 44 | sendto       | 0x2c | int | void * | size_t | struct sockaddr
+| 45 | recvfrom     | 0x2d | int | void * | size_t | unsigned | struct sockaddr * | int * |
+| 49 | bind         | 0x31 | int | struct sockaddr * | int | - | - | - |
+| 50 | listen       | 0x32 | int | int | - | - | - | - |
+| 56 | clone        | 0x38 | unsigned long | unsigned long | int * | int * | unsigned long | - |
+| 57 | fork         | 0x39 | - | - | - | - | - | - |
+| 59 | execve       | 0x3b | const char *filename | const char *const *argv | const char *const *envp | - | - | - |
+| 60 | exit         | 0x3c | int error_code | - | - | - | - | - |
+| 61 | wait4        | 0x3d | pid_t pid | int *stat_addr | int options | struct rusage *ru | - | - |
+| 62 | kill         | 0x3e | pid_t pid | int sig | - | - | - | - |
+| 67 | shmdt        | 0x43 | char *shmaddr | - | - | - | - | - |
+
+Do you see many familiar names? Yes, those libc functions are just wrapper for syscalls. Also note that `read` and `write` syscalls are on the very top of the table, as they are critical features since the earliest days of UNIX.
+
+Let's take the example of the read system call. When making a read system call in a program, the following steps occur:
+
+1. The actual system call number is typically stored in the rax register, which would contain the value 0 for `read`.
+2. The file descriptor identifying the file or input stream to read from is typically passed as the first argument. In the x86_64 architecture, this value would be placed in the rdi register. The buffer where the read data will be stored is passed as the second argument, usually a pointer to a memory location. This pointer would be placed in the rsi register. The maximum number of bytes to read is provided as the third argument, which would be placed in the rdx register.
+3. Once the necessary arguments are prepared in the respective registers, the program triggers the system call by executing the syscall instruction, causing a transition to kernel mode. Inside the kernel, the system call handler identifies the system call number (0 in this case) from the rax register.
+4. The handler retrieves the arguments from the appropriate registers (rdi, rsi, rdx) and performs the requested operation, which is reading data from the specified file descriptor into the provided buffer.After the read operation is completed, the number of bytes read is usually returned in the rax register.
+
+Technically it is possible to write programs only using system calls - you may try hard to print an integer in decimal with write syscall only - but libc serves as a collection of programmer-friendly snippets. When a libc function is called, it internally invoke the corresponding system call to interact with the kernel and perform the required operation. The libc function acts as a wrapper around the system call, providing a higher-level and more convenient interface to the application developer.
+
+## Trace Syscalls
+
+If you wonder how system calls are used in program execution, use strace utility. strace is a command-line tool used on Unix-like systems to trace the system calls and signals made by a program. It allows you to see the interactions between a program and the operating system, which can be helpful for debugging, performance analysis, or understanding program behavior.
+
+Let's say we have a simple C program called hello.c that prints "Hello, world!" to the console:
+
+```c
+# include <stdio.h>
+
+int main() {
+    printf("Hello, world!\n");
+    return 0;
+}
+```
+
+To trace the system calls made by this program, we can compile it and run strace as follows:
+
+```bash
+gcc -o hello hello.c
+strace ./hello
+```
+
+The output of strace will show each system call made by the program and its corresponding result. Here's a sample excerpt of the strace output for the hello program:
+
+```text
+execve("./hello", ["./hello"], 0x7ffdcdd64280 /*58 vars*/) = 0
+brk(NULL)                               = 0x5609415c4000
+…
+fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 0), ...}) = 0
+brk(NULL)                               = 0x5609415c4000
+brk(0x5609415e5000)                     = 0x5609415e5000
+write(1, "Hello, world!\n", 14Hello, world!
+)         = 14
+exit_group(0)                           = ?
++++ exited with 0 +++
+```
+
+In the above output, you can see various system calls such as execve, brk, arch_prctl, access, openat, write, and exit_group. Each line provides information about the system call, its arguments, and the return value. By analyzing the strace output, you can gain insights into how the program interacts with the operating system, diagnose issues, or understand the underlying system behavior during program execution.

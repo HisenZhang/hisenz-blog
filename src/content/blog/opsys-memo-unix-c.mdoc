@@ -1,0 +1,52 @@
+---
+title: "The Philosophy of UNIX and C Programming Language"
+description: "This memo overviews UNIX and C programming for CSCI 4210 Operating System from both high-level and low-level perspectives"
+pubDate: 2023-05-04T00:00:00
+category: "Lecture"
+tags: ["Tutorial", "Spark", "OPSYS"]
+visibility: "public"
+---
+
+This memo overviews UNIX and C programming for CSCI 4210 Operating System from both high-level and low-level perspectives. **In short: everything is an integer.**
+
+## Alternative Spelling of Integer
+
+This class is about UNIX programming. We explore UNIX OS mechanisms and interact with them through APIs. One of the fundamental principles of the UNIX philosophy is to treat everything as a file, including hardware devices, directories, pipes, shared memory, and network sockets that we discussed in this class. The brilliant design allows read and write system calls to handle all IOs.
+
+Now, let's rethink some programming concepts you already know:
+
+- Characters are small integers (0-127).
+- Pointers, aka addresses, are integers.
+- Functions are just pointers, so they are integers.
+- Structs are accessed through pointers - again, integers!
+  - Sometimes a pointer to a struct is called a handle because you can “grab” the struct with it.
+
+All these concepts are just fancy ways to spell “integer”! Programming in C is to encode everything with integers and perform integer arithmetics. Apollo Guidance Computer sent people to the moon using only the magic power of integers. Files are no exception - you may have learned the concept of file descriptors already - again, integers. No surprise here, as C was initially designed for UNIX development in the 1970s.
+
+**So, what's magical with integers?**
+
+Well, not really. An integer just maps to one state in a finite state machine, in this case, our computer. A computer has finite memory, thus can only represent finite number of states. Integer arithmetic models the transition between states.  Any finite set may be used for this task, but with integers you can easily find the preceding and succeeding elements, as its arithmetic is intuitive.
+
+## Read and Write
+
+As mentioned above, many functions in the C library use the `read` and `write` function under the hood:
+
+```c
+ssize_t read(int fd, void *buf, size_t count);
+ssize_t write(int fd, const void *buf, size_t count);
+```
+
+As a low-level function, the read interface is straightforward: all you need is where to read from (file descriptor), where to read to (your buffer), and the number of bytes to read. This function makes a direct system call. So does the write function. You don’t care if the destination is on a floppy disk, an SSD, a pipe, or a network socket as long as it is a file-like object with a file descriptor (spell: i-n-t-e-g-e-r).
+
+You may also find a set of file-related functions online:
+
+```c
+size_t fread(void *restrict ptr, size_t size, size_t nmemb, FILE *restrict stream);
+size_t fwrite(const void *restrict ptr, size_t size, size_t nmemb, FILE *restrict stream);
+char *fgets(char *s, int size, FILE *stream);
+int fputs(const char *s, FILE *stream);
+```
+
+These functions are part of the C library and provide buffered IO for better performance. When you call fread() to read binary data from a file, it makes multiple calls to read() to fetch the requested data. Similarly, when you call fwrite() to write binary data to a file, it makes multiple calls to write().
+
+In this class, I encourage you to use read() and write() for file IO for their simplicity, plus you will get no performance boost because of disabled IO buffers via setvbuf().

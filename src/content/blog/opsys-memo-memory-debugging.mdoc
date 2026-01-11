@@ -1,0 +1,51 @@
+---
+title: "The Guide to Memory Debugging"
+description: "As a C programmer, debugging memory issues can be one of the most frustrating tasks"
+pubDate: 2023-05-02T00:00:00
+category: "Lecture"
+tags: ["Tutorial", "Spark", "OPSYS"]
+visibility: "public"
+---
+
+As a C programmer, debugging memory issues can be one of the most frustrating tasks. When your code is dealing with memory, the slightest mistake can cause your program to crash or produce unexpected results. Therefore, it is crucial to be equipped with handy tools and techniques to effectively and elegantly debug memory issues.
+
+In this memo, I will cover some tips and tricks for troubleshooting 90% of memory issues in C for the CSCI 4210 Operating System, based on my observation as a TA/mentor over semesters.
+
+## Get Handy Tools
+
+The first step in debugging memory issues is to have a reliable memory debugger. It sounds funny as I make this the first tip, but I found some past students don’t have a memory debugger installed on their machines by the end of the semester. More people have memory debuggers installed on VM but rarely use them. Save your life by making your tools handy.
+
+Several memory debuggers are available in the market, including valgrind and drmemory. These tools help you detect and fix memory issues by providing detailed information about the program's memory usage.
+
+## Print. Print. Print
+
+If you are unsure where the program encountered segmentation fault, add a bunch of print statements here and there. See where the program halts. Then, print variables referenced around that location to see if they meet your expectation.
+
+A more elegant way is to use a debugger such as GDB. Despite this class not requiring it, and it’s a steep learning curve initially, I strongly encourage you to pick it up because your precious time and good mood saved are well worth the effort.
+
+## Apply the -g flag
+
+To enable debugging information in your code, compile your program with the -g flag. This flag tells the compiler to generate debug information that the debugger can use to provide detailed information about your program's memory usage. You will see the line number indicating where the error was detected. From there, you can reason along your code to trace where the error was made.
+
+## First Error First
+
+Debugging memory issues can be overwhelming, especially when dealing with hundreds of error messages. Therefore, it is important to start with the first error you encounter. This will eliminate cascading failures as much as possible and help you gain confidence and momentum as you move on to more complex issues.
+
+## Invalid Read, Invalid Write
+
+One of the most common memory issues is an invalid read or write. This occurs when you attempt to read or write to a memory location you cannot access. This can be caused by several factors, including uninitialized variables, out-of-bounds array access, and invalid pointers.
+
+Check the address being accessed. Is it REALLY what you thought it should be?
+
+When debugging an invalid read or write, pay attention to the location and size of the accessed memory. For example:
+
+- ”Address is 4 bytes after a block of 4096 bytes alloc'd” may imply an integer being accessed out-of-boundary of a large int array
+- “Address is 0 bytes after …” could be something wrong with terminating zero (“\0” or 0x00) of a string
+
+## Leaks and Double Free
+
+Memory leaks occur when you allocate memory and do not release it properly, causing out-of-memory (OOM) and crashing. Another common issue is double free. This occurs when you attempt to free a block of memory that has already been freed, which can lead to heap corruption and cause your program to crash.
+
+Both problems can be avoided in the first place by structuring your programs neatly. All homework in this class would be painless if programs were neatly structured, yet it takes intentional practice to build such a gut reaction.
+
+As we call C the “memory-oriented programming,” drawing your memory chunks on paper and seeing how they interact with functions dramatically helps, similar to objects in OOP. Think about the data life cycle and determine the best time to allocate or free them - and always write malloc and free in pairs.

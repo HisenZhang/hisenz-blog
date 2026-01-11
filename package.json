@@ -8,6 +8,7 @@
 		"build": "astro check && astro build",
 		"preview": "astro preview",
 		"deploy": "npm run build && wrangler pages deploy dist --project-name=hisenz-blog --commit-dirty=true",
+		"migrate": "node scripts/migrate-hexo.js",
 		"astro": "astro",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
 		"lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.astro --fix",

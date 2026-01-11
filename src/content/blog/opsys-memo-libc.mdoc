@@ -1,0 +1,47 @@
+---
+title: "About libc - The Standard C library"
+description: "The C standard library, often referred to as libc, is a standard library for the C programming language"
+pubDate: 2023-05-09T00:00:00
+category: "Lecture"
+tags: ["Tutorial", "Spark", "OPSYS"]
+visibility: "public"
+---
+
+The C standard library, often referred to as libc, is a standard library for the C programming language. It provides a collection of functions and macros that are widely used in C programs. The functions mentioned in this memo series, such as printf, strcpy, and memmove, are part of the libc.
+
+You may have seen header such “stdio.h”, “math.h” and “thread.h” so far in this class. The C library provides various modules and headers that contain functions for different purposes, including string manipulation, memory operations, file I/O, time handling, and more. These functions are typically implemented in C and are designed to be portable across different platforms and operating systems to provide convenient and efficient ways to perform those tasks, abstracting away the low-level details of memory management and data manipulation.
+
+The most common libc in all major Linux distributions is glibc, The GNU C Library. The code is highly optimized thus not suitable for education purpose. Alternatively, Musl libc prioritizes simplicity, performance, and standards compliance while providing a minimal and highly compatible implementation of C library functions, therefore widely used in embedded systems.
+
+Familiarize yourself with how libc works paves the way to a deeper understanding of operating systems and the language itself.
+
+## Functions Families
+
+You will often see functions with similar names in the C library. Functions with the "s-" prefix generally deal with strings, while “mem-” is related to memory operations. Examples:
+
+```c
+char *strcpy(char *dest, const char *src); // copies one string to another
+int strcmp(const char *s1, const char *s2); // compares two strings
+void *memcpy(void *dest, const void *src, size_t n);  // copies a block of memory from one location to another
+int memcmp(const void *s1, const void *s2, size_t n); // compares two blocks of memory
+void *memmove(void *dest, const void *src, size_t n); // similar to memcpy(), but allows overlapping memory block
+```
+
+Note how similar their signatures are. The behavior of string and memory variants differ in several ways, primarily in handling the null byte: string functions will return upon hitting a ‘\0’. As an exercise, research the behavior of following functions in printf family:
+
+```c
+int printf(const char *restrict format, ...);
+int fprintf(FILE *restrict stream, const char *restrict format, ...);
+int snprintf(char *restrict s, size_t n, const char *restrict format, ...);
+int sprintf(char *restrict s, const char *restrict format, ...);
+```
+
+## Replacing malloc
+
+[Reference](https://www.gnu.org/software/libc/manual/html_node/Replacing-malloc.html)
+
+The GNU C Library allows for the replacement of its default malloc implementation with an alternative allocator that follows the same interface. Some memory debuggers work this way by having a alternative malloc and free to track allocation history.
+
+This replacement can be achieved for dynamically linked programs through ELF symbol interposition, using shared object dependencies or LD_PRELOAD. For statically linked programs, the custom malloc library needs to be linked before linking against libc.a, either explicitly or implicitly.
+
+To ensure proper functioning of the GNU C Library, a minimum set of functions must be provided by the custom malloc implementation. These functions include malloc, free, calloc, and realloc. These specific malloc-related functions are essential for the proper operation of the GNU C Library.
