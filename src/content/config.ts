@@ -11,6 +11,7 @@ const blog = defineCollection({
 		coverImageCredit: z.string().optional(),
 		category: z.string().optional(),
 		tags: z.array(z.string()).optional(),
+		visibility: z.enum(['public', 'unlisted', 'private']).default('public'),
 	}),
 })
 

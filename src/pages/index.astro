@@ -11,7 +11,10 @@ import keystaticConfig from '../../keystatic.config'
 
 const reader = createReader(process.cwd(), keystaticConfig)
 
-const posts = (await getCollection('blog'))
+const posts = (await getCollection('blog', ({ data }) => {
+	// Only show public posts on homepage
+	return data.visibility === 'public'
+}))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 	.slice(0, 4)
 

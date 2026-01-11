@@ -53,6 +53,16 @@ export const posts = collection({
         itemLabel: (props) => props.value || 'New Tag',
       }
     ),
+    visibility: fields.select({
+      label: 'Visibility',
+      description: 'Control who can see this post',
+      options: [
+        { label: 'Private', value: 'private' },
+        { label: 'Unlisted', value: 'unlisted' },
+        { label: 'Public', value: 'public' },
+      ],
+      defaultValue: 'private',
+    }),
     content: fields.markdoc({
       label: 'Content',
       options: {
