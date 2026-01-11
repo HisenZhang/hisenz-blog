@@ -1,3 +1,8 @@
 links:
+  - name: Home
+  - name: Blog
+    url: blog
   - name: CV
     url: /CV.pdf
+  - name: About
+    url: about
