@@ -19,13 +19,15 @@ This library **should not** be used for industrial or scientific use due to the 
 
 ## Usage
 
-1. You may copy the files in `./include` to your project directory and compile it seperately;
+**Option 1:** You may copy the files in `./include` to your project directory and compile it seperately.
 
-2. You may generate a single head file `vector.h` for your project:
-    ```bash
-    $ make single
-    ```
-    This generate a single head file in the project root directory `./`. Copy the `./vector.h` to your project and include it.
+**Option 2:** You may generate a single head file `vector.h` for your project:
+
+```bash
+$ make single
+```
+
+This generates a single head file in the project root directory `./`. Copy the `./vector.h` to your project and include it.
 
 ## Example
 
@@ -148,10 +150,11 @@ printf("%f", V.x); // This prints out the x component of vector V
 #### Initialization
 
 There're two ways to initialize a vector:
-1. `vecSet(x, y, z)` returns a vector specify the coordinates (x,y,z).
-2. `vecInit()` returns a vector with coordinates all of `0.0`. However, you should use `vecSet(0.0, 0.0, 0.0)` instead for better readability.
+
+- `vecSet(x, y, z)` returns a vector specify the coordinates (x,y,z).
+- `vecInit()` returns a vector with coordinates all of `0.0`. However, you should use `vecSet(0.0, 0.0, 0.0)` instead for better readability.
 
 #### Pretty Print
 
-1. `vecPrint(V)` prints the vector in the form of `<x, y, z> | modulus |`, 2 decimal places by default
-2. `vecnPrint(V, p)` using the specified precision `p`. If p is 0, print in exponential form.
+- `vecPrint(V)` prints the vector in the form of `<x, y, z> | modulus |`, 2 decimal places by default
+- `vecnPrint(V, p)` using the specified precision `p`. If p is 0, print in exponential form.
