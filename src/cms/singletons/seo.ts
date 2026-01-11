@@ -1,7 +1,7 @@
 import { fields, singleton } from '@keystatic/core';
 
 export const seo = singleton({
-  label: 'SEO Settings',
+  label: 'Site & SEO',
   path: 'src/content/settings/seo',
   schema: {
     siteTitle: fields.text({
@@ -14,6 +14,11 @@ export const seo = singleton({
       description: 'Default meta description',
       multiline: true,
       validation: { isRequired: true },
+    }),
+    siteBase: fields.text({
+      label: 'Site Base Path',
+      description: 'Leave empty for root domain, or specify subdirectory like /blog',
+      defaultValue: '',
     }),
     ogImage: fields.image({
       label: 'OG Image',

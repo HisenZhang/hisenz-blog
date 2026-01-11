@@ -1,4 +1,3 @@
-export { site } from './site';
 export { seo } from './seo';
 export { home } from './home';
 export { about } from './about';

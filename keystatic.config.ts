@@ -1,5 +1,5 @@
 import { config } from '@keystatic/core';
-import { site, seo, home, about, social, navigation, footer } from 'src/cms/singletons';
+import { seo, home, about, social, navigation, footer } from 'src/cms/singletons';
 import { posts } from 'src/cms/collections';
 
 export default config({
@@ -12,7 +12,7 @@ export default config({
     brand: { name: 'Hisen\'s Blog' },
     navigation: {
       'Content': ['home', 'about', 'posts'],
-      'Settings': ['site', 'seo', 'social', 'navigation', 'footer'],
+      'Settings': ['seo', 'social', 'navigation', 'footer'],
     },
   },
 
@@ -21,7 +21,6 @@ export default config({
   },
 
   singletons: {
-    site,
     seo,
     home,
     about,
