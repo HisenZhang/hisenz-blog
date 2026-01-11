@@ -55,5 +55,10 @@ export default defineConfig({
 	markdown: {
 		remarkPlugins: [remarkReadingTime, remarkModifiedTime],
 		rehypePlugins: [rehypeFigureTitle, rehypeAccessibleEmojis],
+		shikiConfig: {
+			theme: 'github-dark', // or 'github-light', 'dracula', 'monokai', etc.
+			langs: [], // Add custom languages if needed
+			wrap: true, // Enable word wrap
+		},
 	},
 })
