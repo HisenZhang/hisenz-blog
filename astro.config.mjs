@@ -8,7 +8,6 @@ import react from '@astrojs/react'
 import markdoc from '@astrojs/markdoc'
 import keystatic from '@keystatic/astro'
 import cloudflare from '@astrojs/cloudflare'
-import rehypeFigureTitle from 'rehype-figure-title'
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis'
 import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs'
 import { remarkModifiedTime } from './src/plugins/remark-modified-time.mjs'
@@ -54,7 +53,7 @@ export default defineConfig({
 	},
 	markdown: {
 		remarkPlugins: [remarkReadingTime, remarkModifiedTime],
-		rehypePlugins: [rehypeFigureTitle, rehypeAccessibleEmojis],
+		rehypePlugins: [rehypeAccessibleEmojis],
 		shikiConfig: {
 			theme: 'github-dark', // or 'github-light', 'dracula', 'monokai', etc.
 			langs: [], // Add custom languages if needed
