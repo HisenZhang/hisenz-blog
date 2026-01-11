@@ -6,11 +6,12 @@ interface Props {
 	title: string
 	description: string
 	image?: string
+	useMathJax?: boolean
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 
-const { title, description, image = `${SITE_BASE}/saral-og.jpg` } = Astro.props
+const { title, description, image = `${SITE_BASE}/saral-og.jpg`, useMathJax = false } = Astro.props
 ---
 
 <!-- Prevent search indexing for theme demo page --><!-- REMOVE FOR YOUR SITE -->
@@ -67,3 +68,10 @@ const { title, description, image = `${SITE_BASE}/saral-og.jpg` } = Astro.props
 	title="Saral Theme RSS Feed"
 	href={new URL('rss.xml', Astro.site)}
 />
+
+<!-- MathJax -->
+{useMathJax && (
+	<script is:inline type="text/javascript" id="MathJax-script" async
+		src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+	</script>
+)}

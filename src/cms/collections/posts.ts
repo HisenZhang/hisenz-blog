@@ -6,6 +6,7 @@ export const posts = collection({
   path: 'src/content/blog/*',
   entryLayout: 'content',
   format: { contentField: 'content' },
+  columns: ['title', 'pubDate', 'updatedDate', 'category', 'visibility'],
   schema: {
     title: fields.slug({ name: { label: 'Title' } }),
     description: fields.text({
@@ -62,6 +63,11 @@ export const posts = collection({
         { label: 'Public', value: 'public' },
       ],
       defaultValue: 'private',
+    }),
+    useMathJax: fields.checkbox({
+      label: 'Use MathJax',
+      description: 'Enable MathJax for rendering mathematical formulas',
+      defaultValue: false,
     }),
     content: fields.markdoc({
       label: 'Content',

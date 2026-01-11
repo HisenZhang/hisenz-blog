@@ -9,9 +9,10 @@ import keystaticConfig from '../../keystatic.config'
 interface Props {
 	title?: string
 	description?: string
+	useMathJax?: boolean
 }
 
-const { title, description } = Astro.props
+const { title, description, useMathJax } = Astro.props
 
 const reader = createReader(process.cwd(), keystaticConfig)
 const seoData = await reader.singletons.seo.read()
@@ -30,6 +31,7 @@ import '@fontsource-variable/jetbrains-mono'
 		<BaseHead
 			title={title || defaultTitle}
 			description={description || defaultDescription}
+			useMathJax={useMathJax}
 		/>
 	</head>
 	<body

@@ -9,7 +9,7 @@ export default config({
   },
 
   ui: {
-    brand: { name: 'Saral Blog' },
+    brand: { name: 'Hisen\'s Blog' },
     navigation: {
       'Content': ['home', 'posts'],
       'Media': ['media'],

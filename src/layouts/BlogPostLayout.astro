@@ -23,6 +23,7 @@ const {
 	coverImageCredit,
 	category,
 	tags,
+	useMathJax,
 	headings,
 	slug,
 	remarkPluginFrontmatter,
@@ -44,7 +45,7 @@ const lastModified = dayjs(remarkPluginFrontmatter.lastModified)
 	.format('D MMM YYYY')
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} useMathJax={useMathJax}>
 	<main>
 		<article>
 			<div
