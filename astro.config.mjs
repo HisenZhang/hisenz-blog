@@ -26,7 +26,7 @@ export default defineConfig({
 	}),
 	integrations: [
 		react(),
-		markdoc(),
+		markdoc({ allowHTML: true }),
 		keystatic(),
 		mdx(),
 		sitemap(),
