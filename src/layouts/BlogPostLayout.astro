@@ -19,6 +19,7 @@ const {
 	description,
 	pubDate,
 	updatedDate,
+	coverImageUrl,
 	coverImage,
 	coverImageCredit,
 	category,
@@ -122,13 +123,21 @@ const lastModified = dayjs(remarkPluginFrontmatter.lastModified)
 						</div>
 
 						{
-							(coverImage || blogImages[coverImagePath]) && (
+							(coverImageUrl || coverImage || blogImages[coverImagePath]) && (
 								<>
-									<Image
-										src={coverImage || blogImages[coverImagePath]()}
-										alt={title}
-										class="rounded-lg"
-									/>
+									{coverImageUrl ? (
+										<img
+											src={coverImageUrl}
+											alt={title}
+											class="rounded-lg"
+										/>
+									) : (
+										<Image
+											src={coverImage || blogImages[coverImagePath]()}
+											alt={title}
+											class="rounded-lg"
+										/>
+									)}
 									{coverImageCredit && (
 										<p class="mt-2 mb-8 opacity-80 italic text-sm">
 											Image Credit: {coverImageCredit}

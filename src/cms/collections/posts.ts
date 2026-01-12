@@ -23,9 +23,13 @@ export const posts = collection({
       label: 'Updated Date',
       description: 'Optional - only set if you want to show an update date'
     }),
+    coverImageUrl: fields.text({
+      label: 'Cover Image URL',
+      description: 'Enter an external image URL (recommended: 853x480px). Leave empty to upload a file below.',
+    }),
     coverImage: fields.image({
-      label: 'Cover Image',
-      description: 'Upload a cover image for this post (recommended: 853x480px)',
+      label: 'Or Upload Cover Image',
+      description: 'Upload a cover image (only used if URL above is empty)',
       directory: 'src/assets/blogimages',
       publicPath: '@assets/blogimages/',
     }),

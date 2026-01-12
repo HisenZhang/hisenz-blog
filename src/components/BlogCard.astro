@@ -16,7 +16,13 @@ const coverImagePath = `/src/assets/blogimages/${post.slug}/cover.jpg`
 <div class="flex flex-col gap-4 pb-8 h-full group">
 	<a href={`${SITE_BASE}/blog/${post.slug}/`}>
 		{
-			post.data.coverImage ? (
+			post.data.coverImageUrl ? (
+				<img
+					src={post.data.coverImageUrl}
+					alt={post.data.title}
+					class="object-cover rounded-xl aspect-video"
+				/>
+			) : post.data.coverImage ? (
 				<Image
 					src={post.data.coverImage}
 					alt={post.data.title}
