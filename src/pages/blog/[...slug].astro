@@ -2,6 +2,7 @@
 import { type CollectionEntry, getCollection } from 'astro:content'
 import BlogPostLayout from '../../layouts/BlogPostLayout.astro'
 import type { MarkdownHeading } from 'astro'
+import getReadingTime from 'reading-time'
 
 export const prerender = true
 
@@ -31,13 +32,17 @@ type Props = {
 
 const { post, headings, slug } = Astro.props
 const { Content, remarkPluginFrontmatter } = await post.render()
+
+// Calculate reading time from the post body
+const readingTime = getReadingTime(post.body)
+const minutesRead = readingTime.text
 ---
 
 <BlogPostLayout
 	{...post.data}
 	headings={headings}
 	slug={slug}
-	remarkPluginFrontmatter={remarkPluginFrontmatter}
+	remarkPluginFrontmatter={{ ...remarkPluginFrontmatter, minutesRead }}
 >
 	<Content />
 </BlogPostLayout>
