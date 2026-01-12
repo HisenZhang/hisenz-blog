@@ -1,12 +1,15 @@
 ---
-title: "C语言 | 利用越界和溢出"
-description: "这篇文章以一道challenge为例, 讲述C语言的越界和溢出"
-pubDate: 2018-12-06T12:45:03
-category: "Technology"
-tags: ["Tutorial", "Spark"]
-visibility: "public"
+title: C语言 | 利用越界和溢出
+description: 这篇文章以一道challenge为例, 讲述C语言的越界和溢出
+pubDate: 2018-12-06
+coverImage: '@assets/blogimages/利用越界和溢出-c语言/coverImage.jpg'
+category: Technology
+tags:
+  - Tutorial
+  - Spark
+visibility: public
+useMathJax: false
 ---
-
 这篇文章以一道challenge为例, 讲述C语言的越界和溢出. 本篇也是自己的学习记录.
 
 某日[罗德大佬](https://github.com/rod-lin)在群内分享了一道题:
@@ -14,7 +17,7 @@ visibility: "public"
 题目与代码如下
 
 > What argument(s) to this program will cause it to print "Admin/Debug rights"?
->
+> 
 > 什么参数可以使得这段程序输出 "Admin/Debug rights"?
 
 ```c
@@ -47,7 +50,7 @@ int main (int argc, char** argv) {
 
 首先观察整段代码, 发现没有对这两个变量变量操作的语句. 因此可以肯定不是常规操作. 那么就要考虑利用指针来修改这两个变量里的内容.
 
-进一步分析, 发现数组histogram和这两个整型变量在内存中是邻接的. 于是很自然的想到利用越界. 
+进一步分析, 发现数组histogram和这两个整型变量在内存中是邻接的. 于是很自然的想到利用越界.
 
 ## 数组越界
 
@@ -55,9 +58,9 @@ C语言为了执行效率, 并不会检查数组越界. 这是因为数组的本
 
 $$ address_{base} + index * size_{element} $$
 
-也就是说, 使用数组的`[ ]`符号实际上访问的就是线性变换过的地址, 比指针使用起来方便一些 - 你不需要记得地址递增递减的size. 
+也就是说, 使用数组的`[ ]`符号实际上访问的就是线性变换过的地址, 比指针使用起来方便一些 - 你不需要记得地址递增递减的size.
 
-因此只要计算出来的地址是有效地址, 数组越界的时候就不会报错. 
+因此只要计算出来的地址是有效地址, 数组越界的时候就不会报错.
 
 这里由于两个变量的地址在数组之前, 因此我们使用负的index, 就可以访问到这两个变量的位置. 对负数取模, 结果仍是负数; 操纵数组前面地址的index在0到-19这个区间,包括了那两个变量.
 
@@ -71,9 +74,10 @@ $$ address_{base} + index * size_{element} $$
 histogram[ (h<0?-h:h) % N ] ++;
 ```
 
-这里的index是先对h取绝对值再取模, 也就是说index应该只能是正数. 
+这里的index是先对h取绝对值再取模, 也就是说index应该只能是正数.
 
-然而有一种特殊的情况, 使得绝对值函数会输出负数. 让我们来看一下` h<0?-h:h`的C语言与反汇编代码
+然而有一种特殊的情况, 使得绝对值函数会输出负数. 让我们来看一下`h<0?-h:h`的C语言与反汇编代码
+
 ```c
 // abs.c
 
@@ -81,7 +85,9 @@ int abs(int x) {
 	return x<0?-x:x;
 }
 ```
+
 编译&反汇编
+
 ```bash
 # --no-builtin 排除掉了内建的函数
 gcc -c abs.c --no-builtin 
@@ -115,13 +121,11 @@ retq
 
    随后参数减去`0x00000000`, 结果仍然不变.
 
-2. 参数为负时
+1. 参数为负时
 
    参数与`0xFFFFFFFF`异或, 相当于取反;
 
    取反后的参数减去`0xFFFFFFFF`, 相当于加一.
-
-   
 
 我们看一下正常情况下, 一个负整数`-1024`作为参数时的运算过程:
 
@@ -162,6 +166,7 @@ retq
 这是为什么呢?
 
 执行sub指令前, 寄存器和标志位状态如下:
+
 ```
 rax            0x7fffffff	2147483647
 rdx            0xffffffff	4294967295
@@ -169,11 +174,13 @@ eflags         0x206	[ PF IF ]
 ```
 
 执行`sub  %edx,%eax`后
+
 ```
 rax            0x7fffffff	2147483647
 rdx            0xffffffff	4294967295
 eflags         0xa87	[ CF PF SF IF OF ]
 ```
+
 从elflags可以看出到发生了溢出(`OF`,针对有符号数),进位(`CF`,针对无符号数),`SF`位表明运算结果为负数.
 
 ## Hash 暴力搜索解
@@ -255,11 +262,13 @@ int main(void) {
 ```
 
 编译
+
 ```bash
 gcc -O3 -o hash_threads hash_threads.c -lpthread
 ```
 
 运行结果(部分)
+
 ```
 [RUN] Thread 0.
 [RUN] Thread 1.
@@ -278,11 +287,13 @@ T[5]	,'@nMMU, { 39, 64, 110, 77, 77, 85, 0 }
 [EXIT] Thread 2.
 [EXIT] Thread 3.
 ```
+
 以上的解hash结果取模后均为-8, 也是唯一可能的负数; 直接看来, 向前32字节不可以访问到admin或者debug. 但是编译器可能把变量自动对齐, 这样以来就可以修改到其中部分字节了.
 
 ## 小插曲
 
 一开始调试的时候并没有出现期望的运行结果. 上GDB看:
+
 ```
 (gdb) p &admin
 $2 = (int *) 0x5555557550b0 <admin>
@@ -291,6 +302,7 @@ $3 = (int *) 0x5555557550b4 <debug>
 (gdb) p &histogram 
 $4 = (int (*)[20]) 0x555555755060 <histogram>
 ```
+
 真是无语了 搞了半天histogram居然在两个整型变量的前面....
 请教[yv大佬](https://github.com/qyvlik), 查看了[SO上的回答](https://stackoverflow.com/a/21818977): undefined behavior. 看来编译器并不是按照变量定义顺序来决定内存里的数据位置.
 
@@ -303,9 +315,10 @@ $2 = (int *) 0x555555755064 <debug>
 (gdb) p &histo 
 $3 = (int (*)[20]) 0x555555755080 <histo>
 ```
+
 我使用的编译器为GCC for Debian 7.3.0, 64位, 修改了变量名以后莫名其妙的成了.
 
 ## 总结
 
 1. 发现两者内存空间连续, 决定越界
-2. 利用溢出得到负的绝对值输出
+1. 利用溢出得到负的绝对值输出
