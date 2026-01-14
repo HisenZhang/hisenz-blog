@@ -6,7 +6,8 @@ export async function GET(context) {
 		// Only include public posts in RSS feed
 		return data.visibility === 'public'
 	})
-	return rss({
+
+	const rssResponse = rss({
 		// `<title>` field in output xml
 		title: 'Hisenz Blog',
 		// `<description>` field in output xml
@@ -15,6 +16,10 @@ export async function GET(context) {
 		// Pull in your project "site" from the endpoint context
 		// https://docs.astro.build/en/reference/api-reference/#site
 		site: context.site,
+		// Ensure proper XML content type header
+		xmlns: {
+			atom: 'http://www.w3.org/2005/Atom',
+		},
 		// Array of `<item>`s in output xml
 		// See "Generating items" section for examples using content collections and glob imports
 		items: blog.map((post) => ({
@@ -25,4 +30,6 @@ export async function GET(context) {
 			link: `/blog/${post.slug}/`,
 		})),
 	})
+
+	return rssResponse
 }
