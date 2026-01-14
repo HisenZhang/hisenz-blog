@@ -1,14 +1,14 @@
 import rss from '@astrojs/rss'
 import { getCollection } from 'astro:content'
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts'
 
 export async function GET(context) {
 	const blog = await getCollection('blog')
 	return rss({
 		// `<title>` field in output xml
-		title: 'Saral Theme',
+		title: SITE_TITLE,
 		// `<description>` field in output xml
-		description:
-			'A simple theme for personal blog sites, created for Astro framework',
+		description: SITE_DESCRIPTION,
 		// Pull in your project "site" from the endpoint context
 		// https://docs.astro.build/en/reference/api-reference/#site
 		site: context.site,
@@ -20,7 +20,7 @@ export async function GET(context) {
 			description: post.data.description,
 			// Compute RSS link from post `id`
 			// This example assumes all posts are rendered as `/blog/[id]` routes
-			link: `/blog/${post.id.replace('.md', '')}/`,
+			link: `/blog/${post.id.replace(/\.(md|mdoc)$/, '')}/`,
 		})),
 	})
 }
