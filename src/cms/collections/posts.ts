@@ -46,6 +46,7 @@ export const posts = collection({
         { label: 'Music', value: 'Music' },
         { label: 'Food', value: 'Food' },
         { label: 'Lecture', value: 'Lecture' },
+        { label: 'Aviation', value: 'Aviation' },
       ],
       defaultValue: 'Technology',
     }),
